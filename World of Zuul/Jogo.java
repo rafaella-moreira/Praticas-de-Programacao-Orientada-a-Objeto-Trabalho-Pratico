@@ -116,7 +116,7 @@ public class Jogo
             return;
         }
 
-        String direcao = comando.getSegundaPalavra();
+        String direcao = comando.getAmbienteDestino();
 
         // Tenta sair do ambiente atual
         Ambiente proximoAmbiente = null;

@@ -44,13 +44,13 @@ public class Analisador
 
         linha = entrada.nextLine();
 
-        // Tenta encontrar ate duas palavras na linha
+        // Tenta encontrar a palavra de comando e o ambeinte de destino independente de quantas palavras o usuario digitou.
         Scanner tokenizer = new Scanner(linha);
         if(tokenizer.hasNext()) {
             palavra1 = tokenizer.next();      // pega a primeira palavra
             if(tokenizer.hasNext()) {
-                palavra2 = tokenizer.next();      // pega a segunda palavra
-                // obs: nos simplesmente ignoramos o resto da linha.
+                palavra2 = tokenizer.nextLine().trim();      // pega as palavras referentes ao ambiente de destino. 
+                // nao ignoramos o resto da linha.
             }
         }
 
