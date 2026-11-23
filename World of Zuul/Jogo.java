@@ -19,6 +19,8 @@ public class Jogo
 {
     private Analisador analisador;
     private Ambiente ambienteAtual;
+    private InterfaceTerminal interfaceTerminal;
+    
         
     /**
      * Cria o jogo e incializa seu mapa interno.
@@ -58,7 +60,7 @@ public class Jogo
      */
     public void jogar() 
     {            
-        imprimirBoasVindas();
+        interfaceTerminal.imprimirBoasVindas();
 
         // Entra no loop de comando principal. Aqui nos repetidamente lemos
         // comandos e os executamos ate o jogo terminar.
@@ -69,36 +71,7 @@ public class Jogo
             terminado = processarComando(comando);
         }
         System.out.println("Obrigado por jogar. Ate mais!");
-    }
-
-    /**
-     * Imprime a mensagem de abertura para o jogador.
-     */
-    private void imprimirBoasVindas()
-    {
-        System.out.println();
-        System.out.println("Bem-vindo ao World of Zuul!");
-        System.out.println("World of Zuul eh um novo jogo de aventura, incrivelmente chato.");
-        System.out.println("Digite 'ajuda' se voce precisar de ajuda.");
-        System.out.println();
-        
-        System.out.println("Voce esta " + ambienteAtual.getDescricao());
-    
-        System.out.print("Saidas: ");
-        if(ambienteAtual.saidaNorte != null) {
-            System.out.print("norte ");
-        }
-        if(ambienteAtual.saidaLeste != null) {
-            System.out.print("leste ");
-        }
-        if(ambienteAtual.saidaSul != null) {
-            System.out.print("sul ");
-        }
-        if(ambienteAtual.saidaOeste != null) {
-            System.out.print("oeste ");
-        }
-        System.out.println();
-    }
+    }    
 
     /**
      * Dado um comando, processa-o (ou seja, executa-o)
@@ -116,7 +89,7 @@ public class Jogo
 
         String palavraDeComando = comando.getPalavraDeComando();
         if (palavraDeComando.equals("ajuda")) {
-            imprimirAjuda();
+            interfaceTerminal.imprimirAjuda();
         }
         else if (palavraDeComando.equals("ir")) {
             irParaAmbiente(comando);
@@ -130,19 +103,6 @@ public class Jogo
 
     // Implementacoes dos comandos do usuario
 
-    /**
-     * Printe informacoes de ajuda.
-     * Aqui nos imprimimos algo bobo e enigmatico e a lista de 
-     * palavras de comando
-     */
-    private void imprimirAjuda() 
-    {
-        System.out.println("Voce esta perdido. Voce esta sozinho. Voce caminha");
-        System.out.println("pela universidade.");
-        System.out.println();
-        System.out.println("Suas palavras de comando sao:");
-        System.out.println("   ir sair ajuda");
-    }
 
     /** 
      * Tenta ir em uma direcao. Se existe uma saida entra no 
@@ -161,16 +121,16 @@ public class Jogo
         // Tenta sair do ambiente atual
         Ambiente proximoAmbiente = null;
         if(direcao.equals("norte")) {
-            proximoAmbiente = ambienteAtual.saidaNorte;
+            proximoAmbiente = ambienteAtual.getSaidas().get("norte");
         }
         if(direcao.equals("leste")) {
-            proximoAmbiente = ambienteAtual.saidaLeste;
+            proximoAmbiente = ambienteAtual.getSaidas().get("leste");
         }
         if(direcao.equals("sul")) {
-            proximoAmbiente = ambienteAtual.saidaSul;
+            proximoAmbiente = ambienteAtual.getSaidas().get("sul");
         }
         if(direcao.equals("oeste")) {
-            proximoAmbiente = ambienteAtual.saidaOeste;
+            proximoAmbiente = ambienteAtual.getSaidas().get("oeste");
         }
 
         if (proximoAmbiente == null) {
@@ -179,22 +139,7 @@ public class Jogo
         else {
             ambienteAtual = proximoAmbiente;
             
-            System.out.println("Voce esta " + ambienteAtual.getDescricao());
-            
-            System.out.print("Saidas: ");
-            if(ambienteAtual.saidaNorte != null) {
-                System.out.print("norte ");
-            }
-            if(ambienteAtual.saidaLeste != null) {
-                System.out.print("leste ");
-            }
-            if(ambienteAtual.saidaSul != null) {
-                System.out.print("sul ");
-            }
-            if(ambienteAtual.saidaOeste != null) {
-                System.out.print("oeste ");
-            }
-            System.out.println();
+            interfaceTerminal.imprimirDescricaoAmbiente(ambienteAtual);
         }
     }
 

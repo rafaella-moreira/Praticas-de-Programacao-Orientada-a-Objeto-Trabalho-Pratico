@@ -13,14 +13,12 @@
  * @author  Michael Kölling and David J. Barnes (traduzido por Julio Cesar Alves)
  * @version 2011.07.31 (2016.02.01)
  */
+import java.util.HashMap;
+
 public class Ambiente 
 {
-    public String descricao;
-    public Ambiente saidaNorte;
-    public Ambiente saidaSul;
-    public Ambiente saidaLeste;
-    public Ambiente saidaOeste;
-
+    private String descricao;
+    private HashMap<String, Ambiente> saidas;
     /**
      * Cria um ambiente com a "descricao" passada. Inicialmente, ele
      * nao tem saidas. "descricao" eh algo como "uma cozinha" ou
@@ -33,6 +31,7 @@ public class Ambiente
     public Ambiente(String descricao) 
     {
         this.descricao = descricao;
+        this.saidas = new HashMap<>();
     }
 
     /**
@@ -46,13 +45,13 @@ public class Ambiente
     public void ajustarSaidas(Ambiente norte, Ambiente leste, Ambiente sul, Ambiente oeste) 
     {
         if(norte != null)
-            saidaNorte = norte;
+            saidas.put("norte", norte);
         if(leste != null)
-            saidaLeste = leste;
+            saidas.put("leste", leste);
         if(sul != null)
-            saidaSul = sul;
+            saidas.put("sul", sul);
         if(oeste != null)
-            saidaOeste = oeste;
+            saidas.put("oeste", oeste);
     }
 
     /**
@@ -61,6 +60,10 @@ public class Ambiente
     public String getDescricao()
     {
         return descricao;
+    }
+
+    public HashMap<String, Ambiente> getSaidas() {
+        return saidas;
     }
 
 }
