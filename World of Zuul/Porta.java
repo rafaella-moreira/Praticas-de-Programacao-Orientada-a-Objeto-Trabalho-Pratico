@@ -1,10 +1,10 @@
 import java.util.Random;
 
 public class Porta {
-    Ambiente ambiente1;
-    Ambiente ambiente2;
-    EstadoPorta estadoPorta;
-    Random random = new Random();
+    private Ambiente ambiente1;
+    private Ambiente ambiente2;
+    private EstadoPorta estadoPorta;
+    private Random random = new Random();
 
     public Porta(Ambiente ambiente1, Ambiente ambiente2) {
         this.ambiente1 = ambiente1;
@@ -13,7 +13,7 @@ public class Porta {
 
     //modifica o estado da porta aleatoriamente
     public void modificarEstadoPorta() {
-        int random = (int) (Math.random() * 2);
+        int random = (int) (this.random.nextDouble() * 2);
         if (random == 0) {
             estadoPorta = EstadoPorta.EMPERRADA;
         } else {
