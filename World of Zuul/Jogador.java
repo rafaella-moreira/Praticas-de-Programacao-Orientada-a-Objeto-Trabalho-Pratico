@@ -2,11 +2,13 @@ public class Jogador {
     private Ambiente ambienteAtual;
     private int quantidadeAberturaPortas;
     private boolean possuiCargaExplosiva;
+    private ChaveMestra chaveMestra;
 
     public Jogador(Ambiente ambienteInicial) {
         this.ambienteAtual = ambienteInicial;
         this.quantidadeAberturaPortas = 0;
         this.possuiCargaExplosiva = false;
+        this.chaveMestra = null;
     }
 
     public Ambiente getAmbienteAtual() {

@@ -1,7 +1,9 @@
 public class ChaveMestra {
+    public Ambiente localizacaoChaveMestra;
     private int durabilidade;
 
-    public ChaveMestra(int durabilidade) {
+    public ChaveMestra(Ambiente localizacao, int durabilidade) {
+        this.localizacaoChaveMestra = localizacao;
         this.durabilidade = durabilidade;
     }
 

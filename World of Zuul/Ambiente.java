@@ -13,12 +13,13 @@
  * @author  Michael Kölling and David J. Barnes (traduzido por Julio Cesar Alves)
  * @version 2011.07.31 (2016.02.01)
  */
-import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Ambiente 
 {
     private String descricao;
-    private HashMap<String, Ambiente> saidas;
+    private List<Porta> portas;
     /**
      * Cria um ambiente com a "descricao" passada. Inicialmente, ele
      * nao tem saidas. "descricao" eh algo como "uma cozinha" ou
@@ -31,7 +32,7 @@ public class Ambiente
     public Ambiente(String descricao) 
     {
         this.descricao = descricao;
-        this.saidas = new HashMap<>();
+        this.portas = new ArrayList<>();
     }
 
     /**
@@ -42,16 +43,8 @@ public class Ambiente
      * @param sul A saida sul.
      * @param oeste A saida oeste.
      */
-    public void ajustarSaidas(Ambiente norte, Ambiente leste, Ambiente sul, Ambiente oeste) 
-    {
-        if(norte != null)
-            saidas.put("norte", norte);
-        if(leste != null)
-            saidas.put("leste", leste);
-        if(sul != null)
-            saidas.put("sul", sul);
-        if(oeste != null)
-            saidas.put("oeste", oeste);
+    public void ajustarPortas(Ambiente ambiente1, Ambiente ambiente2, ArrayList<Porta> portas) {
+        portas.add(new Porta(ambiente1, ambiente2));
     }
 
     /**
@@ -62,8 +55,12 @@ public class Ambiente
         return descricao;
     }
 
-    public HashMap<String, Ambiente> getSaidas() {
-        return saidas;
+    public List<Ambiente> getAmbientesConectados(Ambiente ambiente) {
+        List<Ambiente> ambientesConectados = new ArrayList<>();
+        for (Porta porta : portas) {
+            ambientesConectados.add(porta.getAmbienteConectado(ambiente));
+        }
+        return ambientesConectados;
     }
 
 }
