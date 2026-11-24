@@ -17,9 +17,9 @@
  * @version 2011.07.31 (2016.02.01)
  */
 
-public class Comando
+public abstract class Comando
 {
-    private String palavraDeComando;
+    private PalavraDeComando palavraDeComando;
     private String palavraArgumento;
 
     /**
@@ -27,47 +27,48 @@ public class Comando
      * fornecidas, mas qualquer uma (ou ambas) podem ser null.
      * @param primeiraPalavra A primeira palavra do comando. Null se
      * 						  o comando nao foi reconhecido
-     * @param ambienteDestino O ambiente de destino do comando.
+     * @param palavraArgumento O ambiente de destino do comando.
      */
-    public Comando(String primeiraPalavra, String palavraArgumento)
+    public Comando(PalavraDeComando palavraDeComando, String palavraArgumento)
     {
-        palavraDeComando = primeiraPalavra;
+        this.palavraDeComando = palavraDeComando;
         this.palavraArgumento = palavraArgumento;
     }
 
-    /**
-     * Retorna a palavra de comando (a primeira palavra) deste comando.
-     * Se o comando nao foi entendido, o resultado eh null.
-     * @return A palavra de comando.
-     */
-    public String getPalavraDeComando()
+    
+    public PalavraDeComando getPalavraDeComando()
     {
         return palavraDeComando;
     }
 
-    /**
-     * @return A segunda palavra deste comando. Retorna null se 
-     * nao existe segunda palavra.
-     */
+    
     public String getPalavraArgumento()
     {
         return palavraArgumento;
     }
 
-    /**
-     * @return true se o comando nao foi entendido.
-     */
+    
     public boolean ehDesconhecido()
     {
         return (palavraDeComando == null);
     }
 
-    /**
-     * @return true se o comando tem uma segunda palavra.
-     */
+
     public boolean temSegundoArgumento()
     {
         return (palavraArgumento != null);
     }
-}
 
+    public String getSegundaPalavra()
+    {
+        return palavraArgumento;
+    }
+
+    
+    public boolean temSegundaPalavra()
+    {
+        return palavraArgumento != null;
+    }
+
+    public abstract String executar(Jogo jogo);
+}

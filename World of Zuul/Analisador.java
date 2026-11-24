@@ -54,14 +54,27 @@ public class Analisador
             }
         }
 
-        // Agora verifica se esta palavra eh conhecida. Se for, cria um comando
-        // com ela. Se nao, cria um comando "null" (para comando desconhecido)
-        if(palavrasDeComando.ehComando(palavra1)) {
-            return new Comando(palavra1, palavra2);
-        }
-        else {
-            return new Comando(null, palavra2); 
-        }
+        
+        return criarComando(palavrasDeComando.getPalavra(palavra1), palavra2);
+        
     }
+
+    private Comando criarComando(PalavraDeComando palavra, String argumento)
+    {
+        switch (palavra) {
+            case IR:
+                return new ComandoIr(argumento);
+            case CHAVE:
+                return new ComandoChave(argumento);
+            case EXPLODIR:
+                return new ComandoExplodir(argumento);
+            case AJUDA:
+                return new ComandoAjuda(argumento);
+            case SAIR:
+                return new ComandoSair(argumento);
+            default:
+                return new ComandoDesconhecido();
+        }
+    }    
     
 }

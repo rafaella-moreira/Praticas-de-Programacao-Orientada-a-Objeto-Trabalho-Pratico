@@ -20,6 +20,8 @@ public class Jogo
     private Analisador analisador;
     private Ambiente ambienteAtual;
     private InterfaceTerminal interfaceTerminal;
+    private final PalavrasComando palavrasComando;
+    private SituacaoJogo situacao;
     
         
     /**
@@ -29,6 +31,7 @@ public class Jogo
     {
         criarAmbientes();
         analisador = new Analisador();
+        palavrasComando = new PalavrasComando();
     }
 
     /**
@@ -36,23 +39,7 @@ public class Jogo
      */
     private void criarAmbientes()
     {
-        Ambiente fora, anfiteatro, cantina, laboratorio, escritorio;
-      
-        // cria os ambientes
-        fora = new Ambiente("do lado de fora da entrada principal de uma universidade");
-        anfiteatro = new Ambiente("no anfiteatro");
-        cantina = new Ambiente("na cantina do campus");
-        laboratorio = new Ambiente("no laboratorio de computacao");
-        escritorio = new Ambiente("na sala de administracao dos computadores");
         
-        // inicializa as saidas dos ambientes
-        fora.ajustarSaidas(null, anfiteatro, laboratorio, cantina);
-        anfiteatro.ajustarSaidas(null, null, null, fora);
-        cantina.ajustarSaidas(null, fora, null, null);
-        laboratorio.ajustarSaidas(fora, escritorio, null, null);
-        escritorio.ajustarSaidas(null, null, null, laboratorio);
-
-        ambienteAtual = fora;  // o jogo comeca do lado de fora
     }
 
     /**
@@ -110,37 +97,7 @@ public class Jogo
      */
     private void irParaAmbiente(Comando comando) 
     {
-        if(!comando.temSegundaPalavra()) {
-            // se nao ha segunda palavra, nao sabemos pra onde ir...
-            System.out.println("Ir pra onde?");
-            return;
-        }
-
-        String direcao = comando.getAmbienteDestino();
-
-        // Tenta sair do ambiente atual
-        Ambiente proximoAmbiente = null;
-        if(direcao.equals("norte")) {
-            proximoAmbiente = ambienteAtual.getSaidas().get("norte");
-        }
-        if(direcao.equals("leste")) {
-            proximoAmbiente = ambienteAtual.getSaidas().get("leste");
-        }
-        if(direcao.equals("sul")) {
-            proximoAmbiente = ambienteAtual.getSaidas().get("sul");
-        }
-        if(direcao.equals("oeste")) {
-            proximoAmbiente = ambienteAtual.getSaidas().get("oeste");
-        }
-
-        if (proximoAmbiente == null) {
-            System.out.println("Nao ha passagem!");
-        }
-        else {
-            ambienteAtual = proximoAmbiente;
-            
-            interfaceTerminal.imprimirDescricaoAmbiente(ambienteAtual);
-        }
+        
     }
 
     /** 
@@ -158,4 +115,21 @@ public class Jogo
             return true;  // sinaliza que nos queremos sair
         }
     }
+
+    //
+    public String getAjuda(){
+        return "Você é um caçador de tesouros em uma casa abandonada e mal assombrada.\n"
+             + "O tesouro está enterrado em um dos ambientes. Explore a casa abrindo\n"
+             + "portas (algumas podem emperrar!) e use sua única carga explosiva\n"
+             + "no ambiente onde você acha que o tesouro está.\n\n"
+             + "Suas palavras de comando são:\n"
+             + palavrasComando.getDescricoesComandos();
+    }
+
+    public String sair()
+    {
+        situacao = SituacaoJogo.ENCERRADO;
+        return "Obrigado por jogar. Até mais!";
+    }
 }
+
