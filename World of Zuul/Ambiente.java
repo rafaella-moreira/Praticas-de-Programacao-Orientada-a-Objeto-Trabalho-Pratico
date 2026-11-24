@@ -63,4 +63,8 @@ public class Ambiente
         return ambientesConectados;
     }
 
+    public List<Porta> getPortas() {
+        return portas;
+    }
+
 }

@@ -13,22 +13,8 @@ public class InterfaceTerminal {
         System.out.println("Digite 'ajuda' se voce precisar de ajuda.");
         System.out.println();
         
-        System.out.println("Voce esta " + ambienteAtual.getDescricao());
-    
-        System.out.print("Saidas: ");
-        if(ambienteAtual.getSaidas().get("norte") != null) {
-            System.out.print("norte ");
-        }
-        if(ambienteAtual.getSaidas().get("leste") != null) {
-            System.out.print("leste ");
-        }
-        if(ambienteAtual.getSaidas().get("sul") != null) {
-            System.out.print("sul ");
-        }
-        if(ambienteAtual.getSaidas().get("oeste") != null) {
-            System.out.print("oeste ");
-        }
-        System.out.println();
+        imprimirDescricaoAmbiente(ambienteAtual);    
+        imprimirAmbientesSaidas(ambienteAtual);
     }
 
     /**
@@ -46,22 +32,20 @@ public class InterfaceTerminal {
     }
 
 
-    public void imprimirDescricaoAmbiente(Ambiente ambiente) {
-        System.out.println("Voce esta " + ambiente.getDescricao());
-    
+    public void imprimirAmbientesSaidas(Ambiente ambiente) {
+
         System.out.print("Saidas: ");
-        if(ambiente.getSaidas().get("norte") != null) {
-            System.out.print("norte ");
-        }
-        if(ambiente.getSaidas().get("leste") != null) {
-            System.out.print("leste ");
-        }
-        if(ambiente.getSaidas().get("sul") != null) {
-            System.out.print("sul ");
-        }
-        if(ambiente.getSaidas().get("oeste") != null) {
-            System.out.print("oeste ");
+        for (Porta porta : ambienteAtual.getPortas()) {
+            Ambiente ambienteConectado = porta.getAmbienteConectado(ambienteAtual);
+            if (ambienteConectado != null) {
+                System.out.print(ambienteConectado.getDescricao() + " ");
+            }
         }
         System.out.println();
+    }
+
+    //imprimir descricao ambiente
+    public void imprimirDescricaoAmbiente(Ambiente ambiente) {
+        System.out.println("Voce esta " + ambiente.getDescricao());
     }
 }
