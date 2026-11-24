@@ -38,4 +38,6 @@ public class PalavrasComando
         // se chegamos aqui, a string nao foi encontrada nos comandos.
         return false;
     }
+
+    
 }

@@ -1,7 +1,8 @@
-public class Tesouro {
+public class Tesouro extends Item {
     private Ambiente localizacaoTesouro;
 
     public Tesouro(Ambiente localizacaoTesouro) {
+        super("Tesouro");
         this.localizacaoTesouro = localizacaoTesouro;
     }
 
