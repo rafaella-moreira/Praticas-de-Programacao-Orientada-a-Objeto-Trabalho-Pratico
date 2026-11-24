@@ -1,5 +1,5 @@
 public class Tesouro {
-    public Ambiente localizacaoTesouro;
+    private Ambiente localizacaoTesouro;
 
     public Tesouro(Ambiente localizacaoTesouro) {
         this.localizacaoTesouro = localizacaoTesouro;

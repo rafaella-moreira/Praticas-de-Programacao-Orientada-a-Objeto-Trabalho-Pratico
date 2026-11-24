@@ -20,7 +20,7 @@
 public class Comando
 {
     private String palavraDeComando;
-    private String ambienteDestino;
+    private String palavraArgumento;
 
     /**
      * Cria um objeto comando. Primeira e segunda palavra devem ser 
@@ -29,10 +29,10 @@ public class Comando
      * 						  o comando nao foi reconhecido
      * @param ambienteDestino O ambiente de destino do comando.
      */
-    public Comando(String primeiraPalavra, String ambienteDestino)
+    public Comando(String primeiraPalavra, String palavraArgumento)
     {
         palavraDeComando = primeiraPalavra;
-        this.ambienteDestino = ambienteDestino;
+        this.palavraArgumento = palavraArgumento;
     }
 
     /**
@@ -49,9 +49,9 @@ public class Comando
      * @return A segunda palavra deste comando. Retorna null se 
      * nao existe segunda palavra.
      */
-    public String getAmbienteDestino()
+    public String getPalavraArgumento()
     {
-        return ambienteDestino;
+        return palavraArgumento;
     }
 
     /**
@@ -65,9 +65,9 @@ public class Comando
     /**
      * @return true se o comando tem uma segunda palavra.
      */
-    public boolean temSegundaPalavra()
+    public boolean temSegundoArgumento()
     {
-        return (ambienteDestino != null);
+        return (palavraArgumento != null);
     }
 }
 

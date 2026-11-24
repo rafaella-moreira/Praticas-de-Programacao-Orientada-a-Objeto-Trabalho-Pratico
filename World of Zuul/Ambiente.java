@@ -15,6 +15,7 @@
  */
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Ambiente 
 {
@@ -43,8 +44,10 @@ public class Ambiente
      * @param sul A saida sul.
      * @param oeste A saida oeste.
      */
-    public void ajustarPortas(Ambiente ambiente1, Ambiente ambiente2, ArrayList<Porta> portas) {
-        portas.add(new Porta(ambiente1, ambiente2));
+
+    //associar uma porta ao próprio ambiente
+    public void ajustarPortas(Porta porta) {
+        portas.add(porta);
     }
 
     /**
@@ -55,16 +58,16 @@ public class Ambiente
         return descricao;
     }
 
-    public List<Ambiente> getAmbientesConectados(Ambiente ambiente) {
+    public List<Ambiente> getAmbientesConectados() {
         List<Ambiente> ambientesConectados = new ArrayList<>();
         for (Porta porta : portas) {
-            ambientesConectados.add(porta.getAmbienteConectado(ambiente));
+            ambientesConectados.add(porta.getAmbienteConectado(this));
         }
         return ambientesConectados;
     }
 
     public List<Porta> getPortas() {
-        return portas;
+        return Collections.unmodifiableList(portas);
     }
 
 }

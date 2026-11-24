@@ -48,4 +48,13 @@ public class InterfaceTerminal {
     public void imprimirDescricaoAmbiente(Ambiente ambiente) {
         System.out.println("Voce esta " + ambiente.getDescricao());
     }
+
+    public void verificarDicaDescoberta(Dica dica) {
+        if (dica.dicaDescoberta()) {
+            System.out.println("Dica descoberta: " + dica.getTexto());
+        } else {
+            System.out.println("Dica ja foi descoberta!");
+        }
+
+    }
 }

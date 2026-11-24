@@ -8,13 +8,8 @@ public class ChaveMestra {
     }
 
 
-    //utilizar a chave mestra, reduzindo sua durabilidade
-    public void usarChaveMestra() {
-        if (durabilidade > 0) {
-            durabilidade--;
-            System.out.println("Chave mestra usada! Durabilidade restante: " + durabilidade);
-        } else {
-            System.out.println("A chave mestra nao tem mais durabilidade!");
-        }
+    //metodo para saber se posso usar a chave mestra
+    public boolean podeUsarChaveMestra() {
+        return durabilidade > 0;
     }
 }

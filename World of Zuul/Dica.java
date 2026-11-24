@@ -1,7 +1,7 @@
 public class Dica {
-    public String texto;
-    public Ambiente ambienteIndicado;
-    public boolean dicaDescoberta;
+    private String texto;
+    private Ambiente ambienteIndicado;
+    private boolean dicaDescoberta;
 
     public Dica(String texto, Ambiente ambienteIndicado) {
         this.texto = texto;
@@ -18,17 +18,7 @@ public class Dica {
     }
 
     public boolean dicaDescoberta() {
-        if (dicaDescoberta) {
-            System.out.println("Dica ja foi descoberta!");
-        } else {
-            System.out.println("Dica descoberta: " + texto);
-            setDicaDescoberta(true);
-        }
         return dicaDescoberta;
-    }
-
-    private void setDicaDescoberta(boolean dicaDescoberta) {
-        this.dicaDescoberta = dicaDescoberta;
     }
 
 }

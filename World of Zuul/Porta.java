@@ -9,6 +9,7 @@ public class Porta {
     public Porta(Ambiente ambiente1, Ambiente ambiente2) {
         this.ambiente1 = ambiente1;
         this.ambiente2 = ambiente2;
+        estadoPorta = null;
     }
 
     //modifica o estado da porta aleatoriamente
