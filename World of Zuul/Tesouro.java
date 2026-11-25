@@ -9,4 +9,10 @@ public class Tesouro extends Item {
     public Ambiente getLocalizacaoTesouro() {
         return localizacaoTesouro;
     }
+
+    // o tesouro fica enterrado no ambiente: so eh recuperado com a carga explosiva
+    @Override
+    public String aoExplorar(Jogador jogador, Ambiente ambiente) {
+        return null;
+    }
 }

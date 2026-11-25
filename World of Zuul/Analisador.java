@@ -20,7 +20,7 @@ import java.util.Scanner;
 public class Analisador 
 {
     private PalavrasComando palavrasDeComando;  // guarda todas as palavras de comando validas
-    private Scanner entrada;         // origem da entrada de comandos
+    private Scanner entrada;         // entrada do terminal (criada apenas em pegarComando)
 
     /**
      * Cria um analisador para ler do terminal.
@@ -28,25 +28,41 @@ public class Analisador
     public Analisador() 
     {
         palavrasDeComando = new PalavrasComando();
-        entrada = new Scanner(System.in);
     }
 
     /**
+     * Le uma linha do terminal e a interpreta como comando.
      * @return O proximo comando do usuario
      */
     public Comando pegarComando() {
-        String linha;   // guardara uma linha inteira
-        String palavra1 = null;
-        String palavra2 = null;
+        if (entrada == null) {
+            entrada = new Scanner(System.in);   // so cria a entrada de terminal quando for realmente usada
+        }
 
         System.out.print("> ");     // imprime o prompt
 
-        linha = entrada.nextLine();
+        if (!entrada.hasNextLine()) {   // fim da entrada: encerra o jogo
+            return new ComandoSair(null);
+        }
+        return interpretarComando(entrada.nextLine());
+    }
+
+    /**
+     * Transforma um texto (de qualquer origem: terminal, GUI...) em um Comando.
+     * @param linha O texto digitado pelo usuario.
+     * @return O Comando correspondente ao texto.
+     */
+    public Comando interpretarComando(String linha) {
+        String palavra1 = null;
+        String palavra2 = null;
+        if (linha == null) {
+            linha = "";
+        }
 
         // Tenta encontrar a palavra de comando e o ambeinte de destino independente de quantas palavras o usuario digitou.
         Scanner tokenizer = new Scanner(linha);
         if(tokenizer.hasNext()) {
-            palavra1 = tokenizer.next();      // pega a primeira palavra
+            palavra1 = tokenizer.next().toLowerCase();      // pega a primeira palavra
             if(tokenizer.hasNext()) {
                 palavra2 = tokenizer.nextLine().trim();      // pega as palavras referentes ao ambiente de destino. 
                 // nao ignoramos o resto da linha.

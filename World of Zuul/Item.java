@@ -9,4 +9,13 @@ public abstract class Item {
     {
         return nome;
     }
+
+    /**
+     * Define o que acontece quando o jogador explora o ambiente onde este item esta.
+     * Cada subclasse decide seu proprio comportamento (polimorfismo por sobrescrita).
+     * @param jogador O jogador que explorou o ambiente.
+     * @param ambiente O ambiente que contem o item.
+     * @return mensagem a ser exibida ao jogador, ou null se nada deve ser exibido.
+     */
+    public abstract String aoExplorar(Jogador jogador, Ambiente ambiente);
 }

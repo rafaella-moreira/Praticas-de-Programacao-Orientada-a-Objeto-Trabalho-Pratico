@@ -22,4 +22,19 @@ public class Dica extends Item {
         return dicaDescoberta;
     }
 
+    //marca a dica como descoberta pelo jogador
+    public void descobrir() {
+        this.dicaDescoberta = true;
+    }
+
+    // a dica permanece no ambiente e eh revelada na primeira vez que o jogador o explora
+    @Override
+    public String aoExplorar(Jogador jogador, Ambiente ambiente) {
+        if (dicaDescoberta) {
+            return null;
+        }
+        descobrir();
+        return "Dica descoberta: " + texto;
+    }
+
 }
