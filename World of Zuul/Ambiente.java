@@ -16,11 +16,13 @@
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.text.Normalizer;
 
 public class Ambiente 
 {
     private String descricao;
     private List<Porta> portas;
+    private List<Item> itens; // itens presentes neste ambiente (tesouro, chave mestra, dicas...)
     /**
      * Cria um ambiente com a "descricao" passada. Inicialmente, ele
      * nao tem saidas. "descricao" eh algo como "uma cozinha" ou
@@ -33,7 +35,8 @@ public class Ambiente
     public Ambiente(String descricao) 
     {
         this.descricao = descricao;
-        this.portas = new ArrayList<>();
+        this.portas = new ArrayList<Porta>();
+        this.itens = new ArrayList<Item>();
     }
 
     /**
@@ -53,21 +56,82 @@ public class Ambiente
     /**
      * @return A descricao do ambiente.
      */
-    public String getDescricao()
-    {
+    public String getDescricao(){
         return descricao;
     }
 
+    // verifica se o ambiente tem uma porta que leva a outro ambiente
     public List<Ambiente> getAmbientesConectados() {
-        List<Ambiente> ambientesConectados = new ArrayList<>();
+        List<Ambiente> ambientesConectados = new ArrayList<Ambiente>();
         for (Porta porta : portas) {
             ambientesConectados.add(porta.getAmbienteConectado(this));
         }
         return ambientesConectados;
     }
 
+    // retorna uma lista das portas do ambiente
     public List<Porta> getPortas() {
         return Collections.unmodifiableList(portas);
+    }
+
+    /**
+     * Procura a porta que leva ao ambiente com o nome informado
+     * (ignora maiusculas/minusculas e acentos).
+     * @return a porta, ou null se nao houver saida para esse ambiente.
+     */
+    public Porta getPortaPara(String nomeDestino) {
+        if (nomeDestino == null) {
+            return null;
+        }
+        String procurado = normalizar(nomeDestino);
+        for (Porta porta : portas) {
+            Ambiente destino = porta.getAmbienteConectado(this);
+            if (destino != null && normalizar(destino.getDescricao()).equals(procurado)) {
+                return porta;
+            }
+        }
+        return null;
+    }
+
+    //' normaliza o texto removendo acentos e convertendo para minusculas'
+    private static String normalizar(String texto) {
+        return Normalizer.normalize(texto.trim(), Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "")
+                .toLowerCase();
+    }
+
+    // adiciona um item (qualquer subclasse de Item) ao ambiente
+    public void adicionarItem(Item item) {
+        if (item != null) {
+            itens.add(item);
+        }
+    }
+
+    // remove um item do ambiente
+    public void removerItem(Item item) {
+        itens.remove(item);
+    }
+
+    // retorna uma visao somente leitura dos itens do ambiente
+    public List<Item> getItens() {
+        return Collections.unmodifiableList(itens);
+    }
+
+    /**
+     * Procura um item do ambiente pelo nome (ignora maiusculas/minusculas e acentos).
+     * @return o item, ou null se nao houver item com esse nome.
+     */
+    public Item buscarItem(String nome) {
+        if (nome == null) {
+            return null;
+        }
+        String procurado = normalizar(nome);
+        for (Item item : itens) {
+            if (normalizar(item.getNome()).equals(procurado)) {
+                return item;
+            }
+        }
+        return null;
     }
 
 }
