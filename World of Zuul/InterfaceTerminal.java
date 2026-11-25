@@ -17,28 +17,24 @@ public class InterfaceTerminal {
         imprimirAmbientesSaidas(ambienteAtual);
     }
 
-    /**
-     * Printe informacoes de ajuda.
-     * Aqui nos imprimimos algo bobo e enigmatico e a lista de 
-     * palavras de comando
-     */
-    public void imprimirAjuda() 
-    {
-        System.out.println("Voce esta perdido. Voce esta sozinho. Voce caminha");
-        System.out.println("pela universidade.");
-        System.out.println();
-        System.out.println("Suas palavras de comando sao:");
-        System.out.println("   ir sair ajuda");
+    // imprime os comandos possiveis para ajuda 
+    public void imprimirAjuda() {
+        System.out.println("Comandos validos: ");
+        System.out.println("ir <nome do ambiente> : tenta abrir a porta e ir para o ambiente (gasta 1 tentativa)");
+        System.out.println("chave <nome do ambiente>: usa a chave mestra para abrir a porta que dá acesso ao ambiente (não gasta tentativa) ");
+        System.out.println("explodir: usa a carga explosiva no ambiente atual");
+        System.out.println("ajuda: mostra esta ajuda");
+        System.out.println("sair: encerra o jogo");
     }
 
 
     public void imprimirAmbientesSaidas(Ambiente ambiente) {
 
         System.out.print("Saidas: ");
-        for (Porta porta : ambienteAtual.getPortas()) {
-            Ambiente ambienteConectado = porta.getAmbienteConectado(ambienteAtual);
+        for (Porta porta : ambiente.getPortas()) {
+            Ambiente ambienteConectado = porta.getAmbienteConectado(ambiente);
             if (ambienteConectado != null) {
-                System.out.print(ambienteConectado.getDescricao() + " ");
+                System.out.print("[" + ambienteConectado.getDescricao() + "] ");
             }
         }
         System.out.println();
@@ -46,14 +42,14 @@ public class InterfaceTerminal {
 
     //imprimir descricao ambiente
     public void imprimirDescricaoAmbiente(Ambiente ambiente) {
-        System.out.println("Voce esta " + ambiente.getDescricao());
+        System.out.println("Voce esta em: " + ambiente.getDescricao());
     }
 
     public void verificarDicaDescoberta(Dica dica) {
         if (dica.dicaDescoberta()) {
             System.out.println("Dica descoberta: " + dica.getTexto());
         } else {
-            System.out.println("Dica ja foi descoberta!");
+            System.out.println("Esta dica ainda nao foi descoberta!");
         }
 
     }
