@@ -7,6 +7,9 @@ public class ComandoExplodir extends Comando{
 
     @Override
     public String executar(Jogo jogo){
-        
+        if (temSegundaPalavra()) {
+            return "Explodir o que? Basta digitar 'explodir'.";
+        }
+        return jogo.explodir();
     }
 }

@@ -1,4 +1,4 @@
 public enum SituacaoJogo{
 
-    VITORIA, DERROTA, ENCERRADO
+    EM_ANDAMENTO, VITORIA, DERROTA, ENCERRADO
 }

@@ -6,6 +6,9 @@ public class ComandoIr extends Comando{
 
     @Override
     public String executar(Jogo jogo){
-
+        if (!temSegundaPalavra()) {
+            return "Ir para onde?";
+        }
+        return jogo.irParaAmbiente(getPalavraArgumento());
     }
 }

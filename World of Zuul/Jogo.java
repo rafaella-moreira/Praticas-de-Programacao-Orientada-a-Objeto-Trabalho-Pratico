@@ -15,10 +15,18 @@
  * @version 2011.07.31 (2016.02.01)
  */
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Jogo 
 {
+    private static final String ARQUIVO_MAPA = "mapa.txt";
+    private static final String ARQUIVO_GABARITO = "gabarito.txt";
+
     private Analisador analisador;
-    private Ambiente ambienteAtual;
+    private CasaAssombrada casa;
+    private Jogador jogador;
+    private Gabarito gabarito;
     private InterfaceTerminal interfaceTerminal;
     private final PalavrasComando palavrasComando;
     private SituacaoJogo situacao;
@@ -26,20 +34,29 @@ public class Jogo
         
     /**
      * Cria o jogo e incializa seu mapa interno.
+     * @throws ArquivoInvalidoException se o arquivo de mapa nao puder ser carregado.
      */
-    public Jogo() 
+    public Jogo() throws ArquivoInvalidoException
     {
         criarAmbientes();
         analisador = new Analisador();
         palavrasComando = new PalavrasComando();
+        interfaceTerminal = new InterfaceTerminal();
+        situacao = SituacaoJogo.EM_ANDAMENTO;
     }
 
     /**
-     * Cria todos os ambientes e liga as saidas deles
+     * Cria todos os ambientes e liga as saidas deles (lendo o arquivo de mapa),
+     * cria o jogador, sorteia o gabarito e o grava em arquivo.
+     * O arquivo de gabarito eh obrigatorio: se nao puder ser gravado, a partida nao inicia.
      */
-    private void criarAmbientes()
+    private void criarAmbientes() throws ArquivoInvalidoException
     {
-        
+        casa = new CasaAssombrada(ARQUIVO_MAPA);
+        jogador = new Jogador(casa.getAmbienteInicial());
+        gabarito = new GeradorGabarito(casa).gerar();
+
+        new GerenciadorArquivoGabarito(gabarito).escreverGabarito(ARQUIVO_GABARITO);
     }
 
     /**
@@ -47,6 +64,7 @@ public class Jogo
      */
     public void jogar() 
     {            
+        interfaceTerminal.ambienteAtual = jogador.getAmbienteAtual();
         interfaceTerminal.imprimirBoasVindas();
 
         // Entra no loop de comando principal. Aqui nos repetidamente lemos
@@ -57,63 +75,138 @@ public class Jogo
             Comando comando = analisador.pegarComando();
             terminado = processarComando(comando);
         }
-        System.out.println("Obrigado por jogar. Ate mais!");
     }    
 
     /**
-     * Dado um comando, processa-o (ou seja, executa-o)
+     * Dado um comando, processa-o (ou seja, executa-o).
+     * Cada subclasse de Comando sabe se executar (polimorfismo).
      * @param comando O Comando a ser processado.
      * @return true se o comando finaliza o jogo.
      */
     private boolean processarComando(Comando comando) 
     {
-        boolean querSair = false;
+        Ambiente antes = jogador.getAmbienteAtual();
 
-        if(comando.ehDesconhecido()) {
-            System.out.println("Eu nao entendi o que voce disse...");
-            return false;
+        System.out.println(comando.executar(this));
+
+        if (situacao != SituacaoJogo.EM_ANDAMENTO) {
+            return true;
+        }
+        if (jogador.getAmbienteAtual() != antes) {
+            explorarAmbienteAtual();
+        }
+        return false;
+    }
+
+    /**
+     * Mostra o ambiente em que o jogador acabou de entrar, explorando
+     * os itens (dicas, chave mestra...) que estiverem la.
+     */
+    private void explorarAmbienteAtual()
+    {
+        Ambiente atual = jogador.getAmbienteAtual();
+        interfaceTerminal.ambienteAtual = atual;
+        interfaceTerminal.imprimirDescricaoAmbiente(atual);
+
+        // copia da lista: itens (como a chave mestra) podem sair do ambiente durante a exploracao
+        List<Item> itens = new ArrayList<Item>(atual.getItens());
+        for (Item item : itens) {
+            String mensagem = item.aoExplorar(jogador, atual); // polimorfismo: cada item se comporta a sua maneira
+            if (mensagem != null) {
+                System.out.println(mensagem);
+            }
         }
 
-        String palavraDeComando = comando.getPalavraDeComando();
-        if (palavraDeComando.equals("ajuda")) {
-            interfaceTerminal.imprimirAjuda();
-        }
-        else if (palavraDeComando.equals("ir")) {
-            irParaAmbiente(comando);
-        }
-        else if (palavraDeComando.equals("sair")) {
-            querSair = sair(comando);
-        }
-
-        return querSair;
+        interfaceTerminal.imprimirAmbientesSaidas(atual);
     }
 
     // Implementacoes dos comandos do usuario
 
-
     /** 
-     * Tenta ir em uma direcao. Se existe uma saida entra no 
-     * novo ambiente, caso contrario imprime mensagem de erro.
+     * Tenta abrir a porta para o ambiente informado (gasta 1 tentativa).
+     * A porta pode emperrar; nesse caso o jogador continua onde estava.
+     * @return mensagem com o resultado.
      */
-    private void irParaAmbiente(Comando comando) 
+    public String irParaAmbiente(String nomeDestino) 
     {
-        
+        Ambiente atual = jogador.getAmbienteAtual();
+        Porta porta = atual.getPortaPara(nomeDestino);
+        if (porta == null) {
+            return "Nao ha porta para '" + nomeDestino + "' a partir daqui!";
+        }
+        if (!jogador.temTentativas()) {
+            return "Suas tentativas de abrir portas acabaram! " + opcoesSemTentativas();
+        }
+
+        jogador.gastarTentativa();
+
+        String restantes = "(tentativas restantes: " + jogador.getQuantidadeAberturaPortasRestante() + ")";
+        String resultado;
+        if (porta.permitePassagem()) {
+            jogador.setAmbienteAtual(porta.getAmbienteConectado(atual));
+            resultado = "A porta abriu! " + restantes;
+        } else {
+            resultado = "A porta emperrou! " + restantes;
+        }
+        // apos cada tentativa, o estado de TODAS as portas eh sorteado novamente
+        casa.atualizarEstadosPortas();
+        if (!jogador.temTentativas()) {
+            resultado += "\nSuas tentativas acabaram! " + opcoesSemTentativas();
+        }
+        return resultado;
     }
 
-    /** 
-     * "Sair" foi digitado. Verifica o resto do comando pra ver
-     * se nos queremos realmente sair do jogo.
-     * @return true, se este comando sai do jogo, false, caso contrario
+    /**
+     * Usa a chave mestra para abrir a porta (nao gasta tentativa).
+     * @return mensagem com o resultado.
      */
-    private boolean sair(Comando comando) 
+    public String irComChaveMestra(String nomeDestino)
     {
-        if(comando.temSegundaPalavra()) {
-            System.out.println("Sair o que?");
-            return false;
+        ChaveMestra chave = jogador.getChaveMestra();
+        if (chave == null) {
+            return "Voce ainda nao encontrou a chave mestra!";
         }
-        else {
-            return true;  // sinaliza que nos queremos sair
+        if (!chave.podeUsarChaveMestra()) {
+            return "A chave mestra quebrou e nao pode mais ser usada!";
         }
+
+        Ambiente atual = jogador.getAmbienteAtual();
+        Porta porta = atual.getPortaPara(nomeDestino);
+        if (porta == null) {
+            return "Nao ha porta para '" + nomeDestino + "' a partir daqui!";
+        }
+
+        chave.usar();
+        jogador.setAmbienteAtual(porta.getAmbienteConectado(atual));
+        return "Voce destrancou a porta com a chave mestra! (usos restantes: " + chave.getDurabilidade() + ")";
+    }
+
+    /**
+     * Usa a unica carga explosiva no ambiente atual. Se o tesouro estiver
+     * aqui o jogador vence; caso contrario, perde.
+     * @return mensagem com o resultado.
+     */
+    public String explodir()
+    {
+        if (!jogador.usarCargaExplosiva()) {
+            return "Voce nao possui carga explosiva!";
+        }
+
+        Ambiente atual = jogador.getAmbienteAtual();
+        Ambiente local = gabarito.getTesouro().getLocalizacaoTesouro();
+        String mensagem = "BOOM! Voce explodiu '" + atual.getDescricao() + "'!\n";
+        if (atual == local) {
+            situacao = SituacaoJogo.VITORIA;
+            return mensagem + "Entre os escombros voce encontrou o TESOURO! Parabens, voce venceu!";
+        }
+        situacao = SituacaoJogo.DERROTA;
+        return mensagem + "Nao havia nada aqui... O tesouro estava em '" + local.getDescricao()
+                + "'. Voce perdeu!";
+    }
+
+    private String opcoesSemTentativas()
+    {
+        return "Resta usar a chave mestra (se a tiver) ou a carga explosiva neste ambiente.";
     }
 
     //
